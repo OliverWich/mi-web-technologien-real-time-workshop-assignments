@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    />
+    <link
+        rel="stylesheet"
+        href="client/style.css"
+    >
+    <title>Websocket Chat</title>
+  </head>
+  <body>
+  <main>
+    <h1>Chat</h1>
+
+    <div id="chat">
+      <i id="connection-status"></i>
+
+      <div id="messages"></div>
+
+      <form id="form">
+        <div class="input-wrapper">
+          <label for="username-input">Username:</label>
+          <input
+              id="username-input"
+              type="text"
+              placeholder="Username here..."
+              autocomplete="off"
+          />
+        </div>
+        <div class="input-wrapper">
+          <label for="message-input">Message:</label>
+          <input
+              id="message-input"
+              type="text"
+              placeholder="Type your message here..."
+              autocomplete="off"
+          />
+        </div>
+        <button>✉️ Send</button>
+      </form>
+    </div>
+
+  </main>
+
+  <script
+      src="client/index.js"
+      type="module"
+  ></script>
+  </body>
+</html>

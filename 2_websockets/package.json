@@ -1,0 +1,17 @@
+{
+  "name": "2_websockets",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "client": "vite",
+    "server": "node --watch ./server/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "ws": "^8.17.0"
+  }
+}

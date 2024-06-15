@@ -1,0 +1,112 @@
+* {
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+
+    padding: 0;
+}
+
+main {
+    position: relative;
+
+    display: flex;
+    overflow: hidden auto;
+    flex-direction: column;
+
+    height: 100vh;
+    padding: 24px;
+
+    color: white;
+    background-color: #333;
+}
+
+aside {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+
+    flex-direction: column;
+    padding: 24px;
+    gap: 8px;
+}
+
+.flash-notification {
+    animation: flash-in-right 0.2s ease-out forwards;
+    color: white;
+    border-radius: 4px;
+
+    background-color: #222;
+    padding-block: 8px;
+
+    padding-inline: 16px;
+
+    width: 380px;
+}
+
+.flash-notification h4 {
+    margin-bottom: 8px;
+}
+
+.flash-notification .progress {
+    margin-top: 8px;
+}
+
+.progress {
+    height: 6px;
+    animation: progress-bar 1s ease-in-out alternate infinite;
+    border-radius: 2px;
+    background-color: #555;
+}
+
+.progress-bar {
+    height: 100%;
+    transition: width 0.4s ease-out;
+    border-radius: 2px;
+    background-color: #e18935;
+}
+
+@keyframes flash-in-right {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+@keyframes progress-bar {
+    0% {
+        background-color: #555;
+    }
+    100% {
+        background-color: #835d3c;
+    }
+}
+
+h1 {
+    margin-bottom: 16px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #555;
+}
+
+th {
+    background-color: #555;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #444;
+}
+
+tr th:first-child {
+    width: 240px;
+}
