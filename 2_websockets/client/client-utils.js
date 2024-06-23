@@ -33,6 +33,15 @@ export function appendMessage(username, message, timestamp) {
     const messageElement = document.createElement('div')
     messageElement.classList.add('message')
 
+    const avatarElement = document.createElement('img')
+    avatarElement.classList.add('avatar')
+    avatarElement.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${username}&backgroundRotation[]&radius=50&randomizeIds=true&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`
+    avatarElement.alt = `${username}'s avatar`
+    messageElement.appendChild(avatarElement)
+
+    const bodyWrapperElement = document.createElement('div')
+    bodyWrapperElement.classList.add('body-wrapper')
+
     const usernameElement = document.createElement('p')
     usernameElement.classList.add('username')
     const timestampElement = document.createElement('p')
@@ -50,8 +59,10 @@ export function appendMessage(username, message, timestamp) {
     messageTextElement.innerText = message
     timestampElement.innerText = timestamp
 
-    messageElement.appendChild(headerElement)
-    messageElement.appendChild(messageTextElement)
+    bodyWrapperElement.appendChild(headerElement)
+    bodyWrapperElement.appendChild(messageTextElement)
+    messageElement.appendChild(bodyWrapperElement)
+
     messages.appendChild(messageElement)
 
     messages.scrollTop = messages.scrollHeight

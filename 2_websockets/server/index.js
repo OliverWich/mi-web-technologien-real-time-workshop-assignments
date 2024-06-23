@@ -12,16 +12,54 @@ const newTimeStamp = () => {
     return `${day}.${month}.${year} ${hour}:${minute}:${seconds}`
 }
 
-// TODO Implement
+// Stores all currently connected websocket clients
+const clients = []
+// Stores all chat messages (view it as the best DB ever)
+const messages = []
 
-// TODO 1: Create websocket server
+// Helper function to emit messages to all connected clients
+function broadcastMessage(event, data) {
+    clients.forEach(ws => ws.send(JSON.stringify({event, data})))
+}
 
-// TODO 2: Handle new connections
+// Create websocket server
+const server = new WebSocketServer({port: 8080})
 
-// TODO 2.1: Send initial data to new connection
+// Handle new connections
+server.on('connection', (webSocket) => {
+    // Register new connection
+    clients.push(webSocket)
 
-// TODO 2.2: Handle incoming messages from new connection
+    // Send initial data to new connection
+    webSocket.send(JSON.stringify({event: 'chat.initial', data: messages}))
 
-// TODO 2.3: Handle client disconnection (if needed)
+    // Handle incoming messages from new connection
+    webSocket.on('message', (message) => {
+        const {event, data} = JSON.parse(message)
 
-// TODO 3: Add debug message to see if server is running
+        // We only care about chat messages
+        if (event !== 'chat') {
+            return;
+        }
+
+        // We add the timestamp serverside
+        const newMessage = {username: data.username, message: data.message, timestamp: newTimeStamp()}
+        // Make sure the history is recorded for new clients
+        messages.push(newMessage)
+
+        // Broadcast the new message to all clients
+        broadcastMessage('chat.message', newMessage)
+    })
+
+    // Handle client disconnection
+    webSocket.on('close', () => {
+        // We need to remove stale connections
+        const index = clients.indexOf(webSocket)
+        clients.splice(index, 1)
+    })
+})
+
+// Add debug message to see if server is running
+server.on('listening', () => {
+    console.log('Server is listening on port 8080')
+})

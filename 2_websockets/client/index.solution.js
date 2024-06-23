@@ -35,6 +35,7 @@ ws.onmessage = (event) => {
 
 // Set form submit handler to send chat messages to the server
 setOnSubmit((username, message) => {
+    if(!username || !message) return console.error('Username and message are required')
     ws.send(JSON.stringify({
         event: 'chat',
         data: {username, message}

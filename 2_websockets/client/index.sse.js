@@ -28,6 +28,7 @@ eventSource.addEventListener('chat.message', (event) => {
 
 // Set form submit handler to send chat messages to the server
 setOnSubmit((username, message) => {
+    if(!username || !message) return console.error('Username and message are required')
     return fetch('http://localhost:8080/chat', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
