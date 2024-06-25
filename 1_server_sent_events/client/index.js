@@ -1,6 +1,6 @@
 import {addToTable, resetTable, flashNotification, updateFlashNotification} from './client-utils.js'
 
-const eventSource = new EventSource('https://mi-web-technologien-real-time-workshop-backend.fly.dev/sse');
+const eventSource = new EventSource('http://localhost:4000/sse');
 
 eventSource.addEventListener('initial', (event) => {
     const initialData = event.data

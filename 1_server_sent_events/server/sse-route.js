@@ -11,20 +11,89 @@ const newTimeStamp = () => {
     return `${day}.${month}.${year} ${hour}:${minute}:${seconds}.${milliSeconds}`
 }
 
+const initialData = [
+    {
+        id: 1,
+        title: "Initial Notification 1",
+        message: "Initial Message 1, whohoo",
+        time: newTimeStamp()
+    },
+    {
+        id: 2,
+        title: "Initial Notification 2",
+        message: "Initial Message 2, whohoo",
+        time: newTimeStamp()
+    },
+    {
+        id: 3,
+        title: "Initial Notification 3",
+        message: "Initial Message 3, whohoo",
+        time: newTimeStamp()
+    }
+]
+
 /**
  * @param {IncomingMessage} req
  * @param {ServerResponse} res
  */
 export function handleSSERoute(req, res) {
-    // TODO Implement
+    res.writeHead(200, {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive"
+    })
 
-    // TODO 1: Write response head
+    res.write("event: initial\n")
+    res.write(`data: ${JSON.stringify(initialData)}\n`)
+    res.write("\n")
 
-    // TODO 2: Write initial message
+    let messageId = 10
 
-    // TODO 3: Set interval to send messages
+    const interval = setInterval(() => {
+        const newNotification = {
+            id: messageId++,
+            title: `Message ${messageId}`,
+            message: "Another Message, yeah!",
+            time: newTimeStamp(),
+            duration: 5
+        }
 
-    // TODO 4: Handle client disconnect
+        res.write("event: notification\n")
+        res.write(`data: ${JSON.stringify(newNotification)}\n`)
+        res.write("\n")
+    }, 2000)
 
-    // TODO BONUS: Send a progress message
+
+    const initialProgressNotification = {
+        id: 9999,
+        title: "Progress Message",
+        message: "We are progressing...",
+        type: "progress",
+        progress: 0,
+        time: newTimeStamp()
+    }
+    res.write("event: notification\n")
+    res.write(`data: ${JSON.stringify(initialProgressNotification)}\n`)
+    res.write("\n")
+
+    let currentProgress = 0
+    const progressInterval = setInterval(() => {
+        const progressNotification = {
+            id: 9999,
+            title: `Progress Notification`,
+            message: "Progressing...",
+            time: newTimeStamp(),
+            type: "progress",
+            progress: currentProgress += 10,
+        }
+
+        res.write("event: notification-update\n")
+        res.write(`data: ${JSON.stringify(progressNotification)}\n`)
+        res.write("\n")
+    }, 2000)
+
+    req.on("close", () => {
+        clearInterval(interval)
+        clearInterval(progressInterval)
+    })
 }
