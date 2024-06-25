@@ -4,18 +4,44 @@ import {appendMessage, setConnectionStatus, setFormDisabledState, setOnSubmit} f
 // We dont want the user to think they can send messages before the connection is established.
 setFormDisabledState(true)
 
-// TODO Implement
+const ws = new WebSocket('wss://mi-web-technologien-real-time-workshop-backend.fly.dev')
 
-// TODO 1: Create a new WebSocket connection
+setConnectionStatus('connecting')
 
-// TODO 1.1: Set the connection status to 'connecting' while the connection is being established
+// Set the connection status to 'open' when the connection is established, 'error' when an error occurs, and 'close' when the connection is closed
+ws.addEventListener('open', () => {
+    setConnectionStatus('open')
+    setFormDisabledState(false)
+})
 
-// TODO 1.2: Set the connection status to 'open' when the connection is established, 'error' when an error occurs, and 'close' when the connection is closed
+ws.addEventListener('error', () => {
+    setConnectionStatus('error')
+    setFormDisabledState(true)
+})
 
-// TODO 2: Handle incoming messages
+ws.addEventListener('close', () => {
+    setConnectionStatus('close')
+    setFormDisabledState(true)
+})
 
-// TODO 2.1: If the incoming message is a 'chat.initial' event, append each message to the chat window
+// Handle incoming messages
+ws.addEventListener('message', (event) => {
+    const message = JSON.parse(event.data)
+    if (message.event === 'chat.initial') {
+        message.data.forEach(individualMessage => {
+            appendMessage(individualMessage.username, individualMessage.message, individualMessage.timestamp)
+        })
+    } else if (message.event === 'chat.message') {
+        appendMessage(message.data.username, message.data.message, message.data.timestamp)
+    }
+})
 
-// TODO 2.2: If the incoming message is a 'chat.message' event, append the message to the chat window
-
-// TODO 3: Set form submit handler to send chat messages to the server
+setOnSubmit((username, message) => {
+    ws.send(JSON.stringify({
+        event: 'chat',
+        data: {
+            username: username,
+            message: message
+        }
+    }))
+})
