@@ -1,11 +1,34 @@
 import {addToTable, resetTable, flashNotification, updateFlashNotification} from './client-utils.js'
 
-// TODO Implement
+const eventSource = new EventSource('https://mi-web-technologien-real-time-workshop-backend.fly.dev/sse');
 
-// TODO 1: Connect to the server-sent events endpoint
+eventSource.addEventListener('initial', (event) => {
+    const initialData = event.data
 
-// TODO 2: Listen for initial data
+    if (initialData) {
+        const parsedData = JSON.parse(initialData)
+        resetTable()
+        parsedData.forEach((notification) => {
+            addToTable(notification)
+        })
+    }
+})
 
-// TODO 3: Listen for new notifications
+eventSource.addEventListener('notification', (event) => {
+    const data = event.data
 
-// TODO BONUS: Listen for updated notifications
+    if (data) {
+        const parsedData = JSON.parse(data)
+        flashNotification(parsedData)
+        addToTable(parsedData)
+    }
+})
+
+eventSource.addEventListener('notification-update', (event) => {
+    const data = event.data
+
+    if (data) {
+        const parsedData = JSON.parse(data)
+        updateFlashNotification(parsedData)
+    }
+})
