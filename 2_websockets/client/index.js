@@ -4,7 +4,7 @@ import {appendMessage, setConnectionStatus, setFormDisabledState, setOnSubmit} f
 // We dont want the user to think they can send messages before the connection is established.
 setFormDisabledState(true)
 
-const ws = new WebSocket('wss://mi-web-technologien-real-time-workshop-backend.fly.dev')
+const ws = new WebSocket('ws://localhost:8080')
 
 setConnectionStatus('connecting')
 

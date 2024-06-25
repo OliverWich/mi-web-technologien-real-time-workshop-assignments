@@ -1,27 +1,63 @@
-import {WebSocketServer} from 'ws';
+import {WebSocketServer} from 'ws'
 
 const newTimeStamp = () => {
     const date = new Date()
-    const day = date.getDate().toString().padStart(2, "0")
-    const month = (date.getMonth() + 1).toString().padStart(2, "0")
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
     const year = date.getFullYear()
-    const hour = date.getHours().toString().padStart(2, "0")
-    const minute = date.getMinutes().toString().padStart(2, "0")
-    const seconds = date.getSeconds().toString().padStart(2, "0")
+    const hour = date.getHours().toString().padStart(2, '0')
+    const minute = date.getMinutes().toString().padStart(2, '0')
+    const seconds = date.getSeconds().toString().padStart(2, '0')
 
     return `${day}.${month}.${year} ${hour}:${minute}:${seconds}`
 }
 
-// TODO Implement
+const messages = []
 
-// TODO 1: Create websocket server
+const clients = []
 
-// TODO 2: Handle new connections
+const server = new WebSocketServer({port: 8080})
 
-// TODO 2.1: Send initial data to new connection
+function sendMessageToAll(eventType = 'chat.message', data = {}) {
+    clients.forEach(client => {
+        client.send(JSON.stringify({
+            event: eventType,
+            data
+        }))
+    })
+}
 
-// TODO 2.2: Handle incoming messages from new connection
+server.on('listening', () => {
+    console.log('Server is running')
+})
 
-// TODO 2.3: Handle client disconnection (if needed)
+server.on('connection', (ws) => {
+    console.log('Client connected')
 
-// TODO 3: Add debug message to see if server is running
+    clients.push(ws)
+
+    ws.send(JSON.stringify({
+        event: 'chat.initial',
+        data: messages
+    }))
+
+    ws.on('message', (message) => {
+        const parsed = JSON.parse(message)
+        console.log('Message received:', parsed)
+
+        if (parsed.event !== 'chat') return
+
+        const messageWithTimeStamp = {
+            ...parsed.data,
+            timestamp: newTimeStamp()
+        }
+        messages.push(messageWithTimeStamp)
+
+        sendMessageToAll('chat.message', messageWithTimeStamp)
+    })
+
+    ws.on('close', () => {
+        const index = clients.indexOf(ws)
+        clients.splice(index, 1)
+    })
+})
