@@ -12,12 +12,15 @@ const newTimeStamp = () => {
     return `${day}.${month}.${year} ${hour}:${minute}:${seconds}`
 }
 
+// All the messages that have been sent. To get new clients up to speed
 const messages = []
 
+// All the clients that are connected. We need to keep track of them to send messages to all of them
 const clients = []
 
 const server = new WebSocketServer({port: 8080})
 
+// "Broadcast" a message to all connected clients
 function sendMessageToAll(eventType = 'chat.message', data = {}) {
     clients.forEach(client => {
         client.send(JSON.stringify({
